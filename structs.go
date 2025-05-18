@@ -47,7 +47,7 @@ type Address struct {
 	Postcode      string `json:"postcode"`
 }
 
-// Locality checks different fields for the locality name
+// getCity checks different fields for the city name
 func (a *Address) getCity() string {
 	var city string
 	if a.City != "" {
@@ -63,7 +63,7 @@ func (a *Address) getCity() string {
 	return city
 }
 
-// Street checks different fields for the street name
+// getStreet checks different fields for the street name
 func (a *Address) getStreet() string {
 	var street string
 	if a.Road != "" {

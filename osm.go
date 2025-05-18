@@ -22,6 +22,7 @@ func Init(accessToken string) {
 	}
 }
 
+// SearchText search for OSM location by text
 func SearchText(query string) (*LocationIQResponse, error) {
 	params.Set("q", query)
 	reqURL := client.BaseURL + "?" + params.Encode()
