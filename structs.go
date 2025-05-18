@@ -3,8 +3,22 @@ package posm
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 )
+
+type OsmType uint8
+
+const (
+	OsmTypeNone OsmType = iota
+	OsmTypeNode
+	OsmTypeWay
+	OsmTypeRelation
+)
+
+const INVALID_LAT float64 = 200.0
+const INVALID_LNG float64 = 200.0
+const INVALID_OSM_ID int64 = 0
 
 type Client struct {
 	BaseURL    string
@@ -94,9 +108,11 @@ func truncateAtFirstComma(s string) string {
 }
 
 type LocationIQResponse struct {
+	OsmID       string   `json:"osm_id"`
+	OsmType     string   `json:"osm_type"`
 	DisplayName string   `json:"display_name"`
 	Lat         string   `json:"lat"`
-	Lon         string   `json:"lon"`
+	Lng         string   `json:"lon"`
 	Address     *Address `json:"address"`
 }
 
@@ -107,4 +123,41 @@ func (lr *LocationIQResponse) GetAddress() string {
 		address = fmt.Sprintf("%s, %s", name, address)
 	}
 	return address
+}
+
+func (lr *LocationIQResponse) GetLat() float64 {
+	lat, err := strconv.ParseFloat(lr.Lat, 64)
+	if err != nil {
+		return INVALID_LAT
+	}
+	return lat
+}
+
+func (lr *LocationIQResponse) GetLng() float64 {
+	lng, err := strconv.ParseFloat(lr.Lng, 64)
+	if err != nil {
+		return INVALID_LNG
+	}
+	return lng
+}
+
+func (lr *LocationIQResponse) GetOsmID() int64 {
+	osmID, err := strconv.ParseInt(lr.OsmID, 10, 64)
+	if err != nil {
+		return INVALID_OSM_ID
+	}
+	return osmID
+}
+
+func (lr *LocationIQResponse) GetOsmType() OsmType {
+	if lr.OsmType == "node" {
+		return OsmTypeNode
+	}
+	if lr.OsmType == "way" {
+		return OsmTypeWay
+	}
+	if lr.OsmType == "relation" {
+		return OsmTypeRelation
+	}
+	return OsmTypeNone
 }
