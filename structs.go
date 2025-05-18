@@ -59,7 +59,6 @@ func (a *Address) getCity() string {
 	} else if a.Hamlet != "" {
 		city = a.Hamlet
 	}
-
 	return city
 }
 
