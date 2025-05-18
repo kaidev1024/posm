@@ -116,13 +116,31 @@ type LocationIQResponse struct {
 	Address     *Address `json:"address"`
 }
 
-func (lr *LocationIQResponse) GetAddress() string {
+func (lr *LocationIQResponse) GetFullAddress() string {
 	name := truncateAtFirstComma(lr.DisplayName)
 	address := lr.Address.getAddress()
 	if idx := strings.Index(address, name); idx == -1 {
 		address = fmt.Sprintf("%s, %s", name, address)
 	}
 	return address
+}
+
+func (lr *LocationIQResponse) GetStreetAddress() string {
+	address := lr.Address
+	street := address.getStreet()
+	if street == "" {
+		return ""
+	}
+	return fmt.Sprintf("%s, %s, %s, %s", street, address.getCity(), address.State, address.CountryCode)
+}
+
+func (lr *LocationIQResponse) GetCityAddress() string {
+	address := lr.Address
+	city := address.getCity()
+	if city == "" {
+		return ""
+	}
+	return fmt.Sprintf("%s, %s, %s", city, address.State, address.CountryCode)
 }
 
 func (lr *LocationIQResponse) GetLat() float64 {
