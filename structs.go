@@ -142,20 +142,20 @@ func (lr *LocationIQResponse) GetCityAddress() string {
 	return fmt.Sprintf("%s, %s, %s", city, address.State, address.CountryCode)
 }
 
-func (lr *LocationIQResponse) GetLat() float64 {
+func (lr *LocationIQResponse) GetLat() (float64, error) {
 	lat, err := strconv.ParseFloat(lr.Lat, 64)
 	if err != nil {
-		return INVALID_LAT
+		return INVALID_LAT, err
 	}
-	return lat
+	return lat, nil
 }
 
-func (lr *LocationIQResponse) GetLng() float64 {
+func (lr *LocationIQResponse) GetLng() (float64, error) {
 	lng, err := strconv.ParseFloat(lr.Lng, 64)
 	if err != nil {
-		return INVALID_LNG
+		return INVALID_LNG, err
 	}
-	return lng
+	return lng, nil
 }
 
 func (lr *LocationIQResponse) GetOsmID() int64 {
