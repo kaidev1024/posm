@@ -3,6 +3,7 @@ package posm
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 type Client struct {
@@ -67,8 +68,29 @@ func (a *Address) getStreet() string {
 	return street
 }
 
-func (a *Address) GetAddress() string {
-	return fmt.Sprintf("%s %s, %s, %s %s", a.HouseNumber, a.getStreet(), a.getCity(), a.State, a.Postcode)
+func (a *Address) getAddress() string {
+	address := a.getCity()
+	street := a.getStreet()
+	if street != "" {
+		address = fmt.Sprintf("%s, %s", street, address)
+		if a.HouseNumber != "" {
+			address = fmt.Sprintf("%s %s", a.HouseNumber, address)
+		}
+	}
+	if a.State != "" {
+		address = fmt.Sprintf("%s, %s", address, a.State)
+	}
+	if a.Postcode != "" {
+		address = fmt.Sprintf("%s, %s", address, a.Postcode)
+	}
+	return address
+}
+
+func truncateAtFirstComma(s string) string {
+	if idx := strings.Index(s, ","); idx != -1 {
+		return s[:idx]
+	}
+	return s // no comma found
 }
 
 type LocationIQResponse struct {
@@ -76,4 +98,13 @@ type LocationIQResponse struct {
 	Lat         string   `json:"lat"`
 	Lon         string   `json:"lon"`
 	Address     *Address `json:"address"`
+}
+
+func (lr *LocationIQResponse) GetAddress() string {
+	name := truncateAtFirstComma(lr.DisplayName)
+	address := lr.Address.getAddress()
+	if idx := strings.Index(address, name); idx == -1 {
+		address = fmt.Sprintf("%s, %s", name, address)
+	}
+	return address
 }
