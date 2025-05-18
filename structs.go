@@ -1,6 +1,9 @@
 package posm
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 type Client struct {
 	BaseURL    string
@@ -30,26 +33,24 @@ type Address struct {
 }
 
 // Locality checks different fields for the locality name
-func (a *Address) Locality() string {
-	var locality string
-
+func (a *Address) getCity() string {
+	var city string
 	if a.City != "" {
-		locality = a.City
+		city = a.City
 	} else if a.Town != "" {
-		locality = a.Town
+		city = a.Town
 	} else if a.Village != "" {
-		locality = a.Village
+		city = a.Village
 	} else if a.Hamlet != "" {
-		locality = a.Hamlet
+		city = a.Hamlet
 	}
 
-	return locality
+	return city
 }
 
 // Street checks different fields for the street name
-func (a *Address) Street() string {
+func (a *Address) getStreet() string {
 	var street string
-
 	if a.Road != "" {
 		street = a.Road
 	} else if a.Pedestrian != "" {
@@ -63,8 +64,11 @@ func (a *Address) Street() string {
 	} else if a.Highway != "" {
 		street = a.Highway
 	}
-
 	return street
+}
+
+func (a *Address) GetAddress() string {
+	return fmt.Sprintf("%s %s, %s, %s %s", a.HouseNumber, a.getStreet(), a.getCity(), a.State, a.Postcode)
 }
 
 type LocationIQResponse struct {
