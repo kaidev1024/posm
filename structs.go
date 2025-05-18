@@ -158,12 +158,12 @@ func (lr *LocationIQResponse) GetLng() (float64, error) {
 	return lng, nil
 }
 
-func (lr *LocationIQResponse) GetOsmID() int64 {
+func (lr *LocationIQResponse) GetOsmID() (int64, error) {
 	osmID, err := strconv.ParseInt(lr.OsmID, 10, 64)
 	if err != nil {
-		return INVALID_OSM_ID
+		return INVALID_OSM_ID, err
 	}
-	return osmID
+	return osmID, nil
 }
 
 func (lr *LocationIQResponse) GetOsmType() OsmType {
