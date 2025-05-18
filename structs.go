@@ -1,4 +1,4 @@
-package osm
+package posm
 
 import "net/http"
 
