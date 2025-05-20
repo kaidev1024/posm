@@ -124,7 +124,7 @@ type LocationIQResponse struct {
 	Address     *Address `json:"address"`
 }
 
-func (lr *LocationIQResponse) GetFullAddress() string {
+func (lr *LocationIQResponse) GetPointAddress() string {
 	if lr == nil {
 		return ""
 	}
@@ -136,7 +136,14 @@ func (lr *LocationIQResponse) GetFullAddress() string {
 	return address
 }
 
-func (lr *LocationIQResponse) GetStreetAddress() string {
+func (lr *LocationIQResponse) GetCityAddress() string {
+	if lr == nil {
+		return ""
+	}
+	return fmt.Sprintf("%s, %s", lr.Address.getCity(), lr.Address.State)
+}
+
+func (lr *LocationIQResponse) GetStreetAddressForSearch() string {
 	if lr == nil {
 		return ""
 	}
@@ -148,7 +155,7 @@ func (lr *LocationIQResponse) GetStreetAddress() string {
 	return fmt.Sprintf("%s, %s, %s, %s", street, address.getCity(), address.State, address.CountryCode)
 }
 
-func (lr *LocationIQResponse) GetCityAddress() string {
+func (lr *LocationIQResponse) GetCityAddressForSearch() string {
 	if lr == nil {
 		return ""
 	}
