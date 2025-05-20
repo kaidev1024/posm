@@ -143,6 +143,14 @@ func (lr *LocationIQResponse) GetCityAddress() string {
 	return fmt.Sprintf("%s, %s", lr.Address.getCity(), lr.Address.State)
 }
 
+func (lr *LocationIQResponse) GetStreetAddress() string {
+	if lr == nil {
+		return ""
+	}
+	address := lr.Address
+	return fmt.Sprintf("%s, %s, %s", address.getStreet(), address.getCity(), address.State)
+}
+
 func (lr *LocationIQResponse) GetStreetAddressForSearch() string {
 	if lr == nil {
 		return ""
