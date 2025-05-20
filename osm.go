@@ -16,7 +16,6 @@ func Init(accessToken string) {
 	params.Set("key", accessToken)
 	params.Set("format", "json")
 	params.Set("addressdetails", "1")
-	params.Set("limit", "1")
 	client = &Client{
 		BaseURL:    "https://us1.locationiq.com/v1/search.php",
 		HTTPClient: &http.Client{},
@@ -40,6 +39,10 @@ func SearchText(query string) (*LocationIQResponse, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&results); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
-
+	for _, result := range results {
+		if result.Address.getCity() != "" {
+			return &result, nil
+		}
+	}
 	return &results[0], nil
 }
