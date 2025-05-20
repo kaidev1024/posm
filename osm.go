@@ -12,7 +12,7 @@ var params url.Values
 
 // NewClient creates a new LocationIQ client
 func Init(accessToken string) {
-	params := url.Values{}
+	params = url.Values{}
 	params.Set("key", accessToken)
 	params.Set("format", "json")
 	params.Set("limit", "1")
