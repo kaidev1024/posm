@@ -3,7 +3,6 @@ package posm
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 )
@@ -16,6 +15,7 @@ func Init(accessToken string) {
 	params = url.Values{}
 	params.Set("key", accessToken)
 	params.Set("format", "json")
+	params.Set("addressdetails", "1")
 	params.Set("limit", "1")
 	client = &Client{
 		BaseURL:    "https://us1.locationiq.com/v1/search.php",
@@ -36,9 +36,6 @@ func SearchText(query string) (*LocationIQResponse, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("non-200 response: %d", resp.StatusCode)
 	}
-	bodyBytes, err := io.ReadAll(resp.Body)
-
-	fmt.Println(string(bodyBytes))
 	var results []LocationIQResponse
 	if err := json.NewDecoder(resp.Body).Decode(&results); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
