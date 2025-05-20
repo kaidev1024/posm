@@ -8,14 +8,11 @@ import (
 )
 
 var client *Client
-var params url.Values
+var locationIQAccessToken string
 
 // NewClient creates a new LocationIQ client
 func Init(accessToken string) {
-	params = url.Values{}
-	params.Set("key", accessToken)
-	params.Set("format", "json")
-	params.Set("addressdetails", "1")
+	locationIQAccessToken = accessToken
 	client = &Client{
 		BaseURL:    "https://us1.locationiq.com/v1/search.php",
 		HTTPClient: &http.Client{},
@@ -24,6 +21,10 @@ func Init(accessToken string) {
 
 // SearchText search for OSM location by text
 func SearchText(query string) (*LocationIQResponse, error) {
+	params := url.Values{}
+	params.Set("key", locationIQAccessToken)
+	params.Set("format", "json")
+	params.Set("addressdetails", "1")
 	params.Set("q", query)
 	reqURL := client.BaseURL + "?" + params.Encode()
 	resp, err := client.HTTPClient.Get(reqURL)
