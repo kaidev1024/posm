@@ -46,20 +46,20 @@ func SearchText(query string) (*LocationIQResponse, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("non-200 response: %d", resp.StatusCode)
 	}
-	var results []LocationIQResponse
+	var results []*LocationIQResponse
 	if err := json.NewDecoder(resp.Body).Decode(&results); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 	for _, result := range results {
 		if result.Address.getCity() != "" {
-			return &result, nil
+			return result, nil
 		}
 	}
-	return &results[0], nil
+	return results[0], nil
 }
 
 // SearchTextMany search for OSM location by text, return all results
-func SearchTextMany(query string) ([]LocationIQResponse, error) {
+func SearchTextMany(query string) ([]*LocationIQResponse, error) {
 	params := url.Values{}
 	params.Set("key", locationIQAccessToken)
 	params.Set("format", "json")
@@ -75,7 +75,7 @@ func SearchTextMany(query string) ([]LocationIQResponse, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("non-200 response: %d", resp.StatusCode)
 	}
-	var results []LocationIQResponse
+	var results []*LocationIQResponse
 	if err := json.NewDecoder(resp.Body).Decode(&results); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
@@ -83,7 +83,7 @@ func SearchTextMany(query string) ([]LocationIQResponse, error) {
 }
 
 // Autocomplete search for OSM location by text, return all results
-func Autocomplete(query string) ([]LocationIQResponse, error) {
+func Autocomplete(query string) ([]*LocationIQResponse, error) {
 	params := url.Values{}
 	params.Set("key", locationIQAccessToken)
 	params.Set("format", "json")
@@ -100,7 +100,7 @@ func Autocomplete(query string) ([]LocationIQResponse, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("non-200 response: %d", resp.StatusCode)
 	}
-	var results []LocationIQResponse
+	var results []*LocationIQResponse
 	if err := json.NewDecoder(resp.Body).Decode(&results); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
@@ -123,12 +123,12 @@ func Lookup(osmID string) (*LocationIQResponse, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("non-200 response: %d", resp.StatusCode)
 	}
-	var results []LocationIQResponse
+	var results []*LocationIQResponse
 	if err := json.NewDecoder(resp.Body).Decode(&results); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 	if len(results) == 0 {
 		return nil, fmt.Errorf("no results found")
 	}
-	return &results[0], nil
+	return results[0], nil
 }
