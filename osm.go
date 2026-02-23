@@ -7,32 +7,10 @@ import (
 	"net/url"
 )
 
-type Client struct {
-	BaseURL    string
-	HTTPClient *http.Client
-}
-
 var searchClient *Client
 var autoCompleteClient *Client
 var lookupClient *Client
 var locationIQAccessToken string
-
-// NewClient creates a new LocationIQ client
-func Init(accessToken string) {
-	locationIQAccessToken = accessToken
-	searchClient = &Client{
-		BaseURL:    "https://us1.locationiq.com/v1/search",
-		HTTPClient: &http.Client{},
-	}
-	autoCompleteClient = &Client{
-		BaseURL:    "https://api.locationiq.com/v1/autocomplete",
-		HTTPClient: &http.Client{},
-	}
-	lookupClient = &Client{
-		BaseURL:    "https://us1.locationiq.com/v1/lookup",
-		HTTPClient: &http.Client{},
-	}
-}
 
 // SearchText search for OSM location by text, returns the first result
 func SearchText(query string) (*locationIQResponse, error) {
