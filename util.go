@@ -5,6 +5,21 @@ import (
 	"strconv"
 )
 
+type OsmType uint8
+
+const (
+	OsmTypeNone OsmType = iota
+	OsmTypeNode
+	OsmTypeWay
+	OsmTypeRelation
+)
+
+const INVALID_LAT float64 = 200.0
+const INVALID_LNG float64 = 200.0
+const INVALID_OSM_ID int64 = 0
+const HEADQUARTER_LAT float64 = 37.7955
+const HEADQUARTER_LNG float64 = -122.3937
+
 // MergeOsmIDAndType combines OSM ID and type into a single string format like "N5200886615" or "W123456"
 func CreateOsmTID(osmID int64, osmType OsmType) string {
 	var prefix string
