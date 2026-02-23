@@ -65,7 +65,7 @@ func GetStreetByText(text string) (*OsmStreet, error) {
 		Lat:         lat,
 		Lng:         lng,
 		DisplayName: location.DisplayName,
-		Address:     location.Address.getAddress(),
+		Address:     location.getStreetAddress(),
 	}, globalErr
 }
 
@@ -94,7 +94,7 @@ func GetCityByText(text string) (*OsmCity, error) {
 		Lat:         lat,
 		Lng:         lng,
 		DisplayName: location.DisplayName,
-		Address:     location.Address.getAddress(),
+		Address:     location.getCityAddress(),
 	}, globalErr
 }
 
@@ -123,7 +123,7 @@ func GetPointByTID(tid string) (*OsmPoint, error) {
 		Lat:              lat,
 		Lng:              lng,
 		DisplayName:      location.DisplayName,
-		Address:          location.Address.getAddress(),
+		Address:          location.getPointAddress(),
 		StreetSearchText: location.getStreetSearchText(),
 		CitySearchText:   location.getCitySearchText(),
 	}, globalErr
@@ -156,6 +156,9 @@ func GetCitiesBySearch(text string) ([]*OsmCity, error) {
 	}
 	cities := make([]*OsmCity, 0)
 	for _, location := range locations {
+		if !location.isCity() {
+			continue
+		}
 		city, err := getOsmCityFromLocationIQResponse(&location)
 		if err == nil {
 			cities = append(cities, city)
@@ -175,6 +178,9 @@ func GetCitiesByAutocomplete(text string) ([]*OsmCity, error) {
 	}
 	cities := make([]*OsmCity, 0)
 	for _, location := range locations {
+		if !location.isCity() {
+			continue
+		}
 		city, err := getOsmCityFromLocationIQResponse(&location)
 		if err == nil {
 			cities = append(cities, city)
@@ -207,7 +213,7 @@ func getOsmPointFromLocationIQResponse(resp *locationIQResponse) (*OsmPoint, err
 		Lat:              lat,
 		Lng:              lng,
 		DisplayName:      resp.DisplayName,
-		Address:          resp.Address.getAddress(),
+		Address:          resp.getPointAddress(),
 		StreetSearchText: resp.getStreetSearchText(),
 		CitySearchText:   resp.getCitySearchText(),
 	}, globalErr
@@ -234,6 +240,6 @@ func getOsmCityFromLocationIQResponse(resp *locationIQResponse) (*OsmCity, error
 		Lat:         lat,
 		Lng:         lng,
 		DisplayName: resp.DisplayName,
-		Address:     resp.Address.getAddress(),
+		Address:     resp.getCityAddress(),
 	}, globalErr
 }

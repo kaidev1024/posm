@@ -19,6 +19,9 @@ func (lr *locationIQResponse) getPointAddress() string {
 	if lr == nil {
 		return ""
 	}
+	if lr.Address == nil {
+		return lr.DisplayName
+	}
 	name := truncateAtFirstComma(lr.DisplayName)
 	address := lr.Address.getAddress()
 	if idx := strings.Index(address, name); idx == -1 {
@@ -30,6 +33,9 @@ func (lr *locationIQResponse) getPointAddress() string {
 func (lr *locationIQResponse) getCityAddress() string {
 	if lr == nil {
 		return ""
+	}
+	if lr.Address == nil {
+		return lr.DisplayName
 	}
 	address := lr.Address
 	city := address.getCity()
@@ -43,6 +49,9 @@ func (lr *locationIQResponse) getStreetAddress() string {
 	if lr == nil {
 		return ""
 	}
+	if lr.Address == nil {
+		return lr.DisplayName
+	}
 	address := lr.Address
 	return fmt.Sprintf("%s, %s, %s", address.getStreet(), address.getCity(), address.State)
 }
@@ -50,6 +59,9 @@ func (lr *locationIQResponse) getStreetAddress() string {
 func (lr *locationIQResponse) getStreetSearchText() string {
 	if lr == nil {
 		return ""
+	}
+	if lr.Address == nil {
+		return lr.DisplayName
 	}
 	address := lr.Address
 	street := address.getStreet()
@@ -62,6 +74,9 @@ func (lr *locationIQResponse) getStreetSearchText() string {
 func (lr *locationIQResponse) getCitySearchText() string {
 	if lr == nil {
 		return ""
+	}
+	if lr.Address == nil {
+		return lr.DisplayName
 	}
 	address := lr.Address
 	city := address.getCity()
@@ -118,4 +133,11 @@ func (lr *locationIQResponse) getOsmType() OsmType {
 		return OsmTypeRelation
 	}
 	return OsmTypeNone
+}
+
+func (lr *locationIQResponse) isCity() bool {
+	if lr == nil {
+		return false
+	}
+	return lr.Address.isCity()
 }
