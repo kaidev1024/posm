@@ -67,6 +67,13 @@ func (a *address) getStreet() string {
 	return street
 }
 
+func (a *address) isCity() bool {
+	if a == nil {
+		return false
+	}
+	return a.getStreet() == "" && a.getCity() != ""
+}
+
 func (a *address) getAddress() string {
 	if a == nil {
 		return ""

@@ -47,7 +47,7 @@ func (lr *locationIQResponse) getStreetAddress() string {
 	return fmt.Sprintf("%s, %s, %s", address.getStreet(), address.getCity(), address.State)
 }
 
-func (lr *locationIQResponse) getStreetAddressForSearch() string {
+func (lr *locationIQResponse) getStreetSearchText() string {
 	if lr == nil {
 		return ""
 	}
@@ -59,7 +59,7 @@ func (lr *locationIQResponse) getStreetAddressForSearch() string {
 	return fmt.Sprintf("%s, %s, %s, %s", street, address.getCity(), address.State, address.CountryCode)
 }
 
-func (lr *locationIQResponse) getCityAddressForSearch() string {
+func (lr *locationIQResponse) getCitySearchText() string {
 	if lr == nil {
 		return ""
 	}

@@ -10,14 +10,14 @@ type OsmCity struct {
 }
 
 type OsmPoint struct {
-	OsmID         int64
-	OsmType       OsmType
-	Lat           float64
-	Lng           float64
-	DisplayName   string
-	Address       string
-	StreetAddress string
-	CityAddress   string
+	OsmID            int64
+	OsmType          OsmType
+	Lat              float64
+	Lng              float64
+	DisplayName      string
+	Address          string
+	StreetSearchText string
+	CitySearchText   string
 }
 
 type OsmStreet struct {

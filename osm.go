@@ -12,8 +12,8 @@ var autoCompleteClient *Client
 var lookupClient *Client
 var locationIQAccessToken string
 
-// SearchText search for OSM location by text, returns the first result
-func SearchText(query string) (*locationIQResponse, error) {
+// searchText search for OSM location by text, returns the first result
+func searchText(query string) (*locationIQResponse, error) {
 	params := url.Values{}
 	params.Set("key", locationIQAccessToken)
 	params.Set("format", "json")
@@ -41,8 +41,8 @@ func SearchText(query string) (*locationIQResponse, error) {
 	return &results[0], nil
 }
 
-// SearchTextMany search for OSM location by text, return all results
-func SearchTextMany(query string) ([]locationIQResponse, error) {
+// searchTextMany search for OSM location by text, return all results
+func searchTextMany(query string) ([]locationIQResponse, error) {
 	params := url.Values{}
 	params.Set("key", locationIQAccessToken)
 	params.Set("format", "json")
@@ -65,8 +65,8 @@ func SearchTextMany(query string) ([]locationIQResponse, error) {
 	return results, nil
 }
 
-// Autocomplete search for OSM location by text, return all results
-func Autocomplete(query string) ([]locationIQResponse, error) {
+// autocomplete search for OSM location by text, return all results
+func autocomplete(query string) ([]locationIQResponse, error) {
 	params := url.Values{}
 	params.Set("key", locationIQAccessToken)
 	params.Set("format", "json")
@@ -90,12 +90,12 @@ func Autocomplete(query string) ([]locationIQResponse, error) {
 	return results, nil
 }
 
-// Lookup search for OSM location by OSM IDs
-func Lookup(osmID string) (*locationIQResponse, error) {
+// lookup search for OSM location by OSM IDs
+func lookup(osmTID string) (*locationIQResponse, error) {
 	params := url.Values{}
 	params.Set("key", locationIQAccessToken)
 	params.Set("format", "json")
-	params.Set("osm_ids", osmID)
+	params.Set("osm_ids", osmTID)
 	reqURL := lookupClient.BaseURL + "?" + params.Encode()
 	resp, err := lookupClient.HTTPClient.Get(reqURL)
 	if err != nil {
