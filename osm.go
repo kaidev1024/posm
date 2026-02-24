@@ -90,8 +90,8 @@ func autocomplete(query string) ([]locationIQResponse, error) {
 	return results, nil
 }
 
-// lookup search for OSM location by OSM IDs
-func lookup(osmTID string) (*locationIQResponse, error) {
+// lookupByTID search for OSM location by OSM IDs
+func lookupByTID(osmTID string) (*locationIQResponse, error) {
 	params := url.Values{}
 	params.Set("key", locationIQAccessToken)
 	params.Set("format", "json")

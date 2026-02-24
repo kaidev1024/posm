@@ -100,20 +100,20 @@ func GetCityByText(text string) (*OsmCity, error) {
 
 func GetPointByTID(tid string) (*OsmPoint, error) {
 	var globalErr error
-	location, err := lookup(tid)
+	point, err := lookupByTID(tid)
 	if err != nil {
 		return nil, fmt.Errorf("lookup error: %w", err)
 	}
-	osmID, err := location.getOsmID()
+	osmID, err := point.getOsmID()
 	if err != nil {
 		globalErr = fmt.Errorf("getOsmID error: %w", err)
 	}
-	osmType := location.getOsmType()
-	lat, err := location.getLat()
+	osmType := point.getOsmType()
+	lat, err := point.getLat()
 	if err != nil {
 		globalErr = fmt.Errorf("getLat error: %w", err)
 	}
-	lng, err := location.getLng()
+	lng, err := point.getLng()
 	if err != nil {
 		globalErr = fmt.Errorf("getLng error: %w", err)
 	}
@@ -122,10 +122,39 @@ func GetPointByTID(tid string) (*OsmPoint, error) {
 		OsmType:          osmType,
 		Lat:              lat,
 		Lng:              lng,
-		DisplayName:      location.DisplayName,
-		Address:          location.getPointAddress(),
-		StreetSearchText: location.getStreetSearchText(),
-		CitySearchText:   location.getCitySearchText(),
+		DisplayName:      point.DisplayName,
+		Address:          point.getPointAddress(),
+		StreetSearchText: point.getStreetSearchText(),
+		CitySearchText:   point.getCitySearchText(),
+	}, globalErr
+}
+
+func GetCityByTID(tid string) (*OsmCity, error) {
+	var globalErr error
+	city, err := lookupByTID(tid)
+	if err != nil {
+		return nil, fmt.Errorf("lookup error: %w", err)
+	}
+	osmID, err := city.getOsmID()
+	if err != nil {
+		globalErr = fmt.Errorf("getOsmID error: %w", err)
+	}
+	osmType := city.getOsmType()
+	lat, err := city.getLat()
+	if err != nil {
+		globalErr = fmt.Errorf("getLat error: %w", err)
+	}
+	lng, err := city.getLng()
+	if err != nil {
+		globalErr = fmt.Errorf("getLng error: %w", err)
+	}
+	return &OsmCity{
+		OsmID:       osmID,
+		OsmType:     osmType,
+		Lat:         lat,
+		Lng:         lng,
+		DisplayName: city.DisplayName,
+		Address:     city.getCityAddress(),
 	}, globalErr
 }
 
