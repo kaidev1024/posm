@@ -3,6 +3,7 @@ package posm
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -165,9 +166,19 @@ func GetPointsBySearch(text string) ([]*OsmPoint, error) {
 		return nil, fmt.Errorf("searchTextMany error: %w", err)
 	}
 	points := make([]*OsmPoint, 0)
+	normalizedSearch := strings.ToLower(strings.TrimSpace(text))
+	seenAddresses := make(map[string]struct{})
 	for _, location := range locations {
 		point, err := getOsmPointFromLocationIQResponse(&location)
 		if err == nil {
+			normalizedAddress := strings.ToLower(strings.TrimSpace(point.Address))
+			if normalizedSearch != "" && !strings.HasPrefix(normalizedAddress, normalizedSearch) {
+				continue
+			}
+			if _, exists := seenAddresses[normalizedAddress]; exists {
+				continue
+			}
+			seenAddresses[normalizedAddress] = struct{}{}
 			points = append(points, point)
 		} else {
 			// log the error and continue with other results
@@ -206,12 +217,22 @@ func GetCitiesByAutocomplete(text string) ([]*OsmCity, error) {
 		return nil, fmt.Errorf("autocomplete error: %w", err)
 	}
 	cities := make([]*OsmCity, 0)
+	normalizedSearch := strings.ToLower(strings.TrimSpace(text))
+	seenAddresses := make(map[string]struct{})
 	for _, location := range locations {
 		if !location.isCity() {
 			continue
 		}
 		city, err := getOsmCityFromLocationIQResponse(&location)
 		if err == nil {
+			normalizedAddress := strings.ToLower(strings.TrimSpace(city.Address))
+			if normalizedSearch != "" && !strings.HasPrefix(normalizedAddress, normalizedSearch) {
+				continue
+			}
+			if _, exists := seenAddresses[normalizedAddress]; exists {
+				continue
+			}
+			seenAddresses[normalizedAddress] = struct{}{}
 			cities = append(cities, city)
 		} else {
 			// log the error and continue with other results
