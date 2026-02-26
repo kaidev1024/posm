@@ -167,6 +167,9 @@ func GetPointsBySearch(text string) ([]*OsmPoint, error) {
 	}
 	points := make([]*OsmPoint, 0)
 	normalizedSearch := strings.ToLower(strings.TrimSpace(text))
+	if len(normalizedSearch) > 3 {
+		normalizedSearch = normalizedSearch[:3]
+	}
 	seenAddresses := make(map[string]struct{})
 	for _, location := range locations {
 		point, err := getOsmPointFromLocationIQResponse(&location)
@@ -218,6 +221,9 @@ func GetCitiesByAutocomplete(text string) ([]*OsmCity, error) {
 	}
 	cities := make([]*OsmCity, 0)
 	normalizedSearch := strings.ToLower(strings.TrimSpace(text))
+	if len(normalizedSearch) > 3 {
+		normalizedSearch = normalizedSearch[:3]
+	}
 	seenAddresses := make(map[string]struct{})
 	for _, location := range locations {
 		if !location.isCity() {
