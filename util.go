@@ -3,6 +3,7 @@ package posm
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type OsmType uint8
@@ -50,4 +51,12 @@ func ParseOsmTID(tid string) (int64, OsmType, error) {
 	}
 
 	return osmID, osmType, nil
+}
+
+func SanitizeAddress(address string) string {
+	if address == "" {
+		return address
+	}
+	collapsed := strings.Join(strings.Fields(address), " ")
+	return strings.ReplaceAll(collapsed, " ,", ",")
 }

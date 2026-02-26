@@ -8,8 +8,57 @@ import (
 )
 
 func main() {
+	// SanitizeAddress test cases
+	fmt.Println("=== Testing SanitizeAddress ===")
+	sanitizeCases := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			name:     "collapse multiple spaces",
+			input:    "123   Main   St",
+			expected: "123 Main St",
+		},
+		{
+			name:     "remove space before comma",
+			input:    "San Francisco , CA",
+			expected: "San Francisco, CA",
+		},
+		{
+			name:     "collapse and remove space before comma",
+			input:    "  615   John   Muir   Dr  ,   San   Francisco  ",
+			expected: "615 John Muir Dr, San Francisco",
+		},
+		{
+			name:     "tabs and newlines",
+			input:    "Line1\n\tLine2  ,\tLine3",
+			expected: "Line1 Line2, Line3",
+		},
+		{
+			name:     "empty string",
+			input:    "",
+			expected: "",
+		},
+	}
+	failed := 0
+	for _, tc := range sanitizeCases {
+		got := posm.SanitizeAddress(tc.input)
+		if got != tc.expected {
+			failed++
+			fmt.Printf("[FAIL] %s\n  input:    %q\n  expected: %q\n  got:      %q\n", tc.name, tc.input, tc.expected, got)
+		} else {
+			fmt.Printf("[PASS] %s\n", tc.name)
+		}
+	}
+	if failed > 0 {
+		fmt.Printf("SanitizeAddress: %d failed\n\n", failed)
+	} else {
+		fmt.Println("SanitizeAddress: all passed\n")
+	}
+
 	// Initialize with your LocationIQ access token
-	accessToken := "pk.5bd1b15568617a1368f1aee15f6f9d38"
+	accessToken := "your_locationiq_access_token_here"
 	posm.Init(accessToken)
 
 	fmt.Println("=== Testing POSM APIs ===\n")
@@ -47,7 +96,7 @@ func main() {
 
 	// Test 4: GetCitiesBySearch
 	fmt.Println("Test 4: GetCitiesBySearch")
-	cities, err := posm.GetCitiesBySearch("San Francisco")
+	cities, err := posm.GetCitiesBySearch("xxxxxxxx")
 	if err != nil {
 		log.Printf("Error: %v\n", err)
 	} else {
