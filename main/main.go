@@ -58,7 +58,7 @@ func main() {
 	}
 
 	// Initialize with your LocationIQ access token
-	accessToken := "your_locationiq_access_token_here"
+	accessToken := "add_your_locationiq_access_token_here"
 	posm.Init(accessToken)
 
 	fmt.Println("=== Testing POSM APIs ===\n")
@@ -96,7 +96,7 @@ func main() {
 
 	// Test 4: GetCitiesBySearch
 	fmt.Println("Test 4: GetCitiesBySearch")
-	cities, err := posm.GetCitiesBySearch("xxxxxxxx")
+	cities, err := posm.GetCitiesBySearch("San")
 	if err != nil {
 		log.Printf("Error: %v\n", err)
 	} else {

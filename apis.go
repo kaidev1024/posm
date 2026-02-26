@@ -307,8 +307,5 @@ func getOsmCityFromLocationIQResponse(resp *locationIQResponse) (*OsmCity, error
 }
 
 func isUnableToGeocode(err error) bool {
-	if err == nil {
-		return false
-	}
 	return strings.Contains(strings.ToLower(err.Error()), "unable to geocode")
 }

@@ -55,6 +55,9 @@ func searchTextMany(query string) ([]locationIQResponse, error) {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode == http.StatusNotFound {
+		return []locationIQResponse{}, nil
+	}
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("non-200 response: %d", resp.StatusCode)
 	}
@@ -80,6 +83,9 @@ func autocomplete(query string) ([]locationIQResponse, error) {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode == http.StatusNotFound {
+		return []locationIQResponse{}, nil
+	}
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("non-200 response: %d", resp.StatusCode)
 	}
