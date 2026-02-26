@@ -163,6 +163,9 @@ func GetPointsBySearch(text string) ([]*OsmPoint, error) {
 	var globalErr error
 	locations, err := searchTextMany(text)
 	if err != nil {
+		if isUnableToGeocode(err) {
+			return []*OsmPoint{}, nil
+		}
 		return nil, fmt.Errorf("searchTextMany error: %w", err)
 	}
 	points := make([]*OsmPoint, 0)
@@ -217,6 +220,9 @@ func GetCitiesByAutocomplete(text string) ([]*OsmCity, error) {
 	var globalErr error
 	locations, err := autocomplete(text)
 	if err != nil {
+		if isUnableToGeocode(err) {
+			return []*OsmCity{}, nil
+		}
 		return nil, fmt.Errorf("autocomplete error: %w", err)
 	}
 	cities := make([]*OsmCity, 0)
@@ -298,4 +304,11 @@ func getOsmCityFromLocationIQResponse(resp *locationIQResponse) (*OsmCity, error
 		DisplayName: resp.DisplayName,
 		Address:     resp.getCityAddress(),
 	}, globalErr
+}
+
+func isUnableToGeocode(err error) bool {
+	if err == nil {
+		return false
+	}
+	return strings.Contains(strings.ToLower(err.Error()), "unable to geocode")
 }
