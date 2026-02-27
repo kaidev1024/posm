@@ -110,7 +110,10 @@ func (lr *locationIQResponse) getLng() (float64, error) {
 
 func (lr *locationIQResponse) getOsmID() (int64, error) {
 	if lr == nil {
-		return 0, fmt.Errorf("empty location")
+		return INVALID_OSM_ID, fmt.Errorf("empty location")
+	}
+	if lr.OsmID == "" {
+		return INVALID_OSM_ID, nil
 	}
 	osmID, err := strconv.ParseInt(lr.OsmID, 10, 64)
 	if err != nil {
