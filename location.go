@@ -3,7 +3,6 @@ package posm
 import (
 	"fmt"
 	"strconv"
-	"strings"
 )
 
 type locationIQResponse struct {
@@ -22,12 +21,7 @@ func (lr *locationIQResponse) getPointAddress() string {
 	if lr.Address == nil {
 		return lr.DisplayName
 	}
-	name := truncateAtFirstComma(lr.DisplayName)
-	address := lr.Address.getAddress()
-	if idx := strings.Index(address, name); idx == -1 {
-		address = fmt.Sprintf("%s, %s", name, address)
-	}
-	return address
+	return lr.Address.getAddress()
 }
 
 func (lr *locationIQResponse) getCityAddress() string {

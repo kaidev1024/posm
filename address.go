@@ -2,7 +2,6 @@ package posm
 
 import (
 	"fmt"
-	"strings"
 )
 
 // address contains address fields specific to OpenStreetMap
@@ -93,11 +92,4 @@ func (a *address) getAddress() string {
 		address = fmt.Sprintf("%s, %s", address, a.Postcode)
 	}
 	return address
-}
-
-func truncateAtFirstComma(s string) string {
-	if idx := strings.Index(s, ","); idx != -1 {
-		return s[:idx]
-	}
-	return s // no comma found
 }
