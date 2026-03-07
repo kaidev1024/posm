@@ -6,7 +6,6 @@ import (
 	"strings"
 )
 
-const INVALID_OSM_ID int64 = 0
 const HEADQUARTER_LAT float64 = 37.7955
 const HEADQUARTER_LNG float64 = -122.3937
 
