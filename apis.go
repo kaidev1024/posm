@@ -69,7 +69,7 @@ func GetCityByText(text string) (*OsmCity, error) {
 	}, globalErr
 }
 
-func GetPointByTID(tid string) (*OsmPoint, error) {
+func GetPointByOsmTID(tid string) (*OsmPoint, error) {
 	var globalErr error
 	point, err := lookupByOsmTID(tid)
 	if err != nil {
@@ -90,7 +90,7 @@ func GetPointByTID(tid string) (*OsmPoint, error) {
 	}, globalErr
 }
 
-func GetCityByTID(tid string) (*OsmCity, error) {
+func GetCityByOsmTID(tid string) (*OsmCity, error) {
 	var globalErr error
 	city, err := lookupByOsmTID(tid)
 	if err != nil {
