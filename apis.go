@@ -31,7 +31,7 @@ func Init(accessToken string) {
 	}
 }
 
-func GetStreetByText(text string) (*OsmStreet, error) {
+func GetStreetBySearch(text string) (*OsmStreet, error) {
 	var globalErr error
 	location, err := searchText(text)
 	if err != nil {
@@ -50,7 +50,7 @@ func GetStreetByText(text string) (*OsmStreet, error) {
 	}, globalErr
 }
 
-func GetCityByText(text string) (*OsmCity, error) {
+func GetCityBySearch(text string) (*OsmCity, error) {
 	var globalErr error
 	location, err := searchText(text)
 	if err != nil {
@@ -69,7 +69,7 @@ func GetCityByText(text string) (*OsmCity, error) {
 	}, globalErr
 }
 
-func GetPointByOsmTID(tid string) (*OsmPoint, error) {
+func GetPointByLookup(tid string) (*OsmPoint, error) {
 	var globalErr error
 	point, err := lookupByOsmTID(tid)
 	if err != nil {
@@ -90,7 +90,7 @@ func GetPointByOsmTID(tid string) (*OsmPoint, error) {
 	}, globalErr
 }
 
-func GetCityByOsmTID(tid string) (*OsmCity, error) {
+func GetCityByLookup(tid string) (*OsmCity, error) {
 	var globalErr error
 	city, err := lookupByOsmTID(tid)
 	if err != nil {
@@ -202,6 +202,31 @@ func GetCitiesByAutocomplete(text string) ([]*OsmCity, error) {
 		}
 	}
 	return cities, globalErr
+}
+
+func IsOsmPlace(placeID string) bool {
+	placeType := getPlaceType(placeID)
+	return placeType == PlaceTypeOsmNode ||
+		placeType == PlaceTypeOsmWay ||
+		placeType == PlaceTypeOsmRelation
+}
+
+func getPlaceType(placeID string) PlaceType {
+	if placeID == "" {
+		return PlaceTypeNone
+	}
+	switch placeID[0] {
+	case 'N':
+		return PlaceTypeOsmNode
+	case 'W':
+		return PlaceTypeOsmWay
+	case 'R':
+		return PlaceTypeOsmRelation
+	case 'P':
+		return PlaceTypePlace
+	default:
+		return PlaceTypeNone
+	}
 }
 
 func getOsmPointFromLocationIQResponse(resp *locationIQResponse) (*OsmPoint, error) {

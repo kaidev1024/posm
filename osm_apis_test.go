@@ -134,24 +134,24 @@ func TestAPIFunctions(t *testing.T) {
 
 	setupClientsForServer(server)
 
-	street, err := GetStreetByText("street")
+	street, err := GetStreetBySearch("street")
 	if err != nil || street.PlaceID == "" || street.Address == "" {
-		t.Fatalf("GetStreetByText failed: street=%+v err=%v", street, err)
+		t.Fatalf("GetStreetBySearch failed: street=%+v err=%v", street, err)
 	}
 
-	city, err := GetCityByText("city")
+	city, err := GetCityBySearch("city")
 	if err == nil || city == nil {
-		t.Fatalf("GetCityByText should return city with parse error, got city=%+v err=%v", city, err)
+		t.Fatalf("GetCityBySearch should return city with parse error, got city=%+v err=%v", city, err)
 	}
 
-	point, err := GetPointByOsmTID("W1")
+	point, err := GetPointByLookup("W1")
 	if err != nil || point.PlaceID == "" || point.StreetSearchText == "" || point.CitySearchText == "" {
-		t.Fatalf("GetPointByOsmTID failed: point=%+v err=%v", point, err)
+		t.Fatalf("GetPointByLookup failed: point=%+v err=%v", point, err)
 	}
 
-	cityByID, err := GetCityByOsmTID("W1")
+	cityByID, err := GetCityByLookup("W1")
 	if err != nil || cityByID.PlaceID == "" || cityByID.Address == "" {
-		t.Fatalf("GetCityByOsmTID failed: city=%+v err=%v", cityByID, err)
+		t.Fatalf("GetCityByLookup failed: city=%+v err=%v", cityByID, err)
 	}
 
 	points, err := GetPointsBySearch("san")
