@@ -1,8 +1,7 @@
 package posm
 
 type OsmCity struct {
-	OsmID       int64
-	OsmType     OsmType
+	PlaceID     string
 	Lat         float64
 	Lng         float64
 	DisplayName string
@@ -10,8 +9,7 @@ type OsmCity struct {
 }
 
 type OsmPoint struct {
-	OsmID            int64
-	OsmType          OsmType
+	PlaceID          string
 	Lat              float64
 	Lng              float64
 	DisplayName      string
@@ -21,8 +19,7 @@ type OsmPoint struct {
 }
 
 type OsmStreet struct {
-	OsmID       int64
-	OsmType     OsmType
+	PlaceID     string
 	Lat         float64
 	Lng         float64
 	DisplayName string

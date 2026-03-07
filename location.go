@@ -3,9 +3,11 @@ package posm
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type locationIQResponse struct {
+	PlaceID     string   `json:"place_id"`
 	OsmID       string   `json:"osm_id"`
 	OsmType     string   `json:"osm_type"`
 	DisplayName string   `json:"display_name"`
@@ -80,56 +82,19 @@ func (lr *locationIQResponse) getCitySearchText() string {
 	return fmt.Sprintf("%s, %s, %s", city, address.State, address.CountryCode)
 }
 
-func (lr *locationIQResponse) getLat() (float64, error) {
+func (lr *locationIQResponse) parseCoordinates() (float64, float64, error) {
 	if lr == nil {
-		return INVALID_LAT, fmt.Errorf("empty location")
+		return HEADQUARTER_LAT, HEADQUARTER_LNG, fmt.Errorf("empty location")
 	}
 	lat, err := strconv.ParseFloat(lr.Lat, 64)
 	if err != nil {
-		return INVALID_LAT, err
-	}
-	return lat, nil
-}
-
-func (lr *locationIQResponse) getLng() (float64, error) {
-	if lr == nil {
-		return INVALID_LNG, fmt.Errorf("empty location")
+		return HEADQUARTER_LAT, HEADQUARTER_LNG, err
 	}
 	lng, err := strconv.ParseFloat(lr.Lng, 64)
 	if err != nil {
-		return INVALID_LNG, err
+		return HEADQUARTER_LAT, HEADQUARTER_LNG, err
 	}
-	return lng, nil
-}
-
-func (lr *locationIQResponse) getOsmID() (int64, error) {
-	if lr == nil {
-		return INVALID_OSM_ID, fmt.Errorf("empty location")
-	}
-	if lr.OsmID == "" {
-		return INVALID_OSM_ID, nil
-	}
-	osmID, err := strconv.ParseInt(lr.OsmID, 10, 64)
-	if err != nil {
-		return INVALID_OSM_ID, err
-	}
-	return osmID, nil
-}
-
-func (lr *locationIQResponse) getOsmType() OsmType {
-	if lr == nil {
-		return OsmTypeNone
-	}
-	if lr.OsmType == "node" {
-		return OsmTypeNode
-	}
-	if lr.OsmType == "way" {
-		return OsmTypeWay
-	}
-	if lr.OsmType == "relation" {
-		return OsmTypeRelation
-	}
-	return OsmTypeNone
+	return lat, lng, nil
 }
 
 func (lr *locationIQResponse) isCity() bool {
@@ -137,4 +102,38 @@ func (lr *locationIQResponse) isCity() bool {
 		return false
 	}
 	return lr.Address.isCity()
+}
+
+func (lr *locationIQResponse) getPlaceID() string {
+	if lr == nil {
+		return ""
+	}
+	prefix := ""
+	id := ""
+	if lr.OsmType == "" && lr.OsmID == "" {
+		id = lr.PlaceID
+		if lr.OsmType == "node" {
+			prefix = "N"
+		}
+		if lr.OsmType == "way" {
+			prefix = "W"
+		}
+		if lr.OsmType == "relation" {
+			prefix = "R"
+		}
+	} else if lr.PlaceID != "" {
+		id = lr.PlaceID
+		prefix = "P"
+	} else {
+		prefix = "X"
+		addressName := ""
+		if lr.DisplayName != "" {
+			addressName = lr.DisplayName
+		} else if lr.Address != nil {
+			addressName = lr.Address.getAddress()
+		}
+		addressName = strings.ReplaceAll(addressName, " ", "_")
+		id = fmt.Sprintf("%s_%s_%s", addressName, lr.Lat, lr.Lng)
+	}
+	return fmt.Sprintf("%s%s", prefix, id)
 }

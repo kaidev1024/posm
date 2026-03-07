@@ -6,15 +6,6 @@ import (
 	"strings"
 )
 
-const (
-	OsmTypeNone OsmType = iota
-	OsmTypeNode
-	OsmTypeWay
-	OsmTypeRelation
-)
-
-const INVALID_LAT float64 = 999.0
-const INVALID_LNG float64 = 999.0
 const INVALID_OSM_ID int64 = 0
 const HEADQUARTER_LAT float64 = 37.7955
 const HEADQUARTER_LNG float64 = -122.3937
@@ -47,22 +38,12 @@ func GetStreetByText(text string) (*OsmStreet, error) {
 	if err != nil {
 		return nil, fmt.Errorf("searchText error: %w", err)
 	}
-	osmID, err := location.getOsmID()
+	lat, lng, err := location.parseCoordinates()
 	if err != nil {
-		globalErr = fmt.Errorf("getOsmID error: %w", err)
-	}
-	osmType := location.getOsmType()
-	lat, err := location.getLat()
-	if err != nil {
-		globalErr = fmt.Errorf("getLat error: %w", err)
-	}
-	lng, err := location.getLng()
-	if err != nil {
-		globalErr = fmt.Errorf("getLng error: %w", err)
+		globalErr = fmt.Errorf("parseCoordinates error: %w", err)
 	}
 	return &OsmStreet{
-		OsmID:       osmID,
-		OsmType:     osmType,
+		PlaceID:     location.getPlaceID(),
 		Lat:         lat,
 		Lng:         lng,
 		DisplayName: location.DisplayName,
@@ -76,22 +57,12 @@ func GetCityByText(text string) (*OsmCity, error) {
 	if err != nil {
 		return nil, fmt.Errorf("searchText error: %w", err)
 	}
-	osmID, err := location.getOsmID()
+	lat, lng, err := location.parseCoordinates()
 	if err != nil {
-		globalErr = fmt.Errorf("getOsmID error: %w", err)
-	}
-	osmType := location.getOsmType()
-	lat, err := location.getLat()
-	if err != nil {
-		globalErr = fmt.Errorf("getLat error: %w", err)
-	}
-	lng, err := location.getLng()
-	if err != nil {
-		globalErr = fmt.Errorf("getLng error: %w", err)
+		globalErr = fmt.Errorf("parseCoordinates error: %w", err)
 	}
 	return &OsmCity{
-		OsmID:       osmID,
-		OsmType:     osmType,
+		PlaceID:     location.getPlaceID(),
 		Lat:         lat,
 		Lng:         lng,
 		DisplayName: location.DisplayName,
@@ -101,26 +72,16 @@ func GetCityByText(text string) (*OsmCity, error) {
 
 func GetPointByTID(tid string) (*OsmPoint, error) {
 	var globalErr error
-	point, err := lookupByTID(tid)
+	point, err := lookupByOsmTID(tid)
 	if err != nil {
 		return nil, fmt.Errorf("lookup error: %w", err)
 	}
-	osmID, err := point.getOsmID()
+	lat, lng, err := point.parseCoordinates()
 	if err != nil {
-		globalErr = fmt.Errorf("getOsmID error: %w", err)
-	}
-	osmType := point.getOsmType()
-	lat, err := point.getLat()
-	if err != nil {
-		globalErr = fmt.Errorf("getLat error: %w", err)
-	}
-	lng, err := point.getLng()
-	if err != nil {
-		globalErr = fmt.Errorf("getLng error: %w", err)
+		globalErr = fmt.Errorf("parseCoordinates error: %w", err)
 	}
 	return &OsmPoint{
-		OsmID:            osmID,
-		OsmType:          osmType,
+		PlaceID:          point.getPlaceID(),
 		Lat:              lat,
 		Lng:              lng,
 		DisplayName:      point.DisplayName,
@@ -132,26 +93,16 @@ func GetPointByTID(tid string) (*OsmPoint, error) {
 
 func GetCityByTID(tid string) (*OsmCity, error) {
 	var globalErr error
-	city, err := lookupByTID(tid)
+	city, err := lookupByOsmTID(tid)
 	if err != nil {
 		return nil, fmt.Errorf("lookup error: %w", err)
 	}
-	osmID, err := city.getOsmID()
+	lat, lng, err := city.parseCoordinates()
 	if err != nil {
-		globalErr = fmt.Errorf("getOsmID error: %w", err)
-	}
-	osmType := city.getOsmType()
-	lat, err := city.getLat()
-	if err != nil {
-		globalErr = fmt.Errorf("getLat error: %w", err)
-	}
-	lng, err := city.getLng()
-	if err != nil {
-		globalErr = fmt.Errorf("getLng error: %w", err)
+		globalErr = fmt.Errorf("parseCoordinates error: %w", err)
 	}
 	return &OsmCity{
-		OsmID:       osmID,
-		OsmType:     osmType,
+		PlaceID:     city.getPlaceID(),
 		Lat:         lat,
 		Lng:         lng,
 		DisplayName: city.DisplayName,
@@ -256,22 +207,12 @@ func GetCitiesByAutocomplete(text string) ([]*OsmCity, error) {
 
 func getOsmPointFromLocationIQResponse(resp *locationIQResponse) (*OsmPoint, error) {
 	var globalErr error
-	osmID, err := resp.getOsmID()
+	lat, lng, err := resp.parseCoordinates()
 	if err != nil {
-		globalErr = fmt.Errorf("getOsmID error: %w", err)
-	}
-	osmType := resp.getOsmType()
-	lat, err := resp.getLat()
-	if err != nil {
-		globalErr = fmt.Errorf("getLat error: %w", err)
-	}
-	lng, err := resp.getLng()
-	if err != nil {
-		globalErr = fmt.Errorf("getLng error: %w", err)
+		globalErr = fmt.Errorf("parseCoordinates error: %w", err)
 	}
 	return &OsmPoint{
-		OsmID:            osmID,
-		OsmType:          osmType,
+		PlaceID:          resp.getPlaceID(),
 		Lat:              lat,
 		Lng:              lng,
 		DisplayName:      resp.DisplayName,
@@ -283,22 +224,13 @@ func getOsmPointFromLocationIQResponse(resp *locationIQResponse) (*OsmPoint, err
 
 func getOsmCityFromLocationIQResponse(resp *locationIQResponse) (*OsmCity, error) {
 	var globalErr error
-	osmID, err := resp.getOsmID()
+	lat, lng, err := resp.parseCoordinates()
 	if err != nil {
-		globalErr = fmt.Errorf("getOsmID error: %w", err)
+		globalErr = fmt.Errorf("parseCoordinates error: %w", err)
 	}
-	osmType := resp.getOsmType()
-	lat, err := resp.getLat()
-	if err != nil {
-		globalErr = fmt.Errorf("getLat error: %w", err)
-	}
-	lng, err := resp.getLng()
-	if err != nil {
-		globalErr = fmt.Errorf("getLng error: %w", err)
-	}
+
 	return &OsmCity{
-		OsmID:       osmID,
-		OsmType:     osmType,
+		PlaceID:     resp.getPlaceID(),
 		Lat:         lat,
 		Lng:         lng,
 		DisplayName: resp.DisplayName,
