@@ -188,9 +188,6 @@ func GetCitiesByAutocomplete(text string) ([]*OsmCity, error) {
 		city, err := getOsmCityFromLocationIQResponse(&location)
 		if err == nil {
 			normalizedAddress := strings.ToLower(strings.TrimSpace(city.Address))
-			if normalizedSearch != "" && !strings.HasPrefix(normalizedAddress, normalizedSearch) {
-				continue
-			}
 			if _, exists := seenAddresses[normalizedAddress]; exists {
 				continue
 			}
