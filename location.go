@@ -121,11 +121,8 @@ func (lr *locationIQResponse) getPlaceID() string {
 		if lr.OsmType == "relation" {
 			prefix = "R"
 		}
-	} else if lr.PlaceID != "" {
-		id = lr.PlaceID
-		prefix = "P"
 	} else {
-		prefix = "X"
+		prefix = "P"
 		addressName := ""
 		if lr.DisplayName != "" {
 			addressName = lr.DisplayName
