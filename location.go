@@ -110,8 +110,8 @@ func (lr *locationIQResponse) getPlaceID() string {
 	}
 	prefix := ""
 	id := ""
-	if lr.OsmType == "" && lr.OsmID == "" {
-		id = lr.PlaceID
+	if lr.OsmType != "" && lr.OsmID != "" {
+		id = lr.OsmID
 		if lr.OsmType == "node" {
 			prefix = "N"
 		}
