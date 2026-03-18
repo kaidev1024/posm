@@ -3,7 +3,6 @@ package posm
 import (
 	"fmt"
 	"strconv"
-	"strings"
 )
 
 type locationIQResponse struct {
@@ -129,8 +128,7 @@ func (lr *locationIQResponse) getPlaceID() string {
 		} else if lr.Address != nil {
 			addressName = lr.Address.getAddress()
 		}
-		addressName = strings.ReplaceAll(addressName, " ", "_")
-		id = fmt.Sprintf("%s_%s_%s", addressName, lr.Lat, lr.Lng)
+		id = contructPlaceID(addressName, lr.Lat, lr.Lng)
 	}
 	return fmt.Sprintf("%s%s", prefix, id)
 }

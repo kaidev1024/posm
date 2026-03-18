@@ -1,6 +1,7 @@
 package posm
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -20,4 +21,14 @@ func SanitizeAddress(address string) string {
 	}
 	address = strings.Join(strings.Fields(address), " ")
 	return strings.ReplaceAll(address, " ,", ",")
+}
+
+func contructPlaceID(address, lat, lng string) string {
+	addressName := strings.ReplaceAll(address, " ", "_")
+	return fmt.Sprintf("%s_%s_%s", addressName, lat, lng)
+}
+
+func ContructPlaceID(address string, lat, lng float64) string {
+	addressName := strings.ReplaceAll(address, " ", "_")
+	return fmt.Sprintf("%s_%f_%f", addressName, lat, lng)
 }
